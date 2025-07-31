@@ -1,0 +1,150 @@
+{
+    "version": "1.0.0",
+    "inputs": [
+        {
+            // uses augustocdias.tasks-shell-input
+            "id": "programName",
+            "type": "command",
+            "command": "shellCommand.execute",
+            "args": {
+                "cwd": "${workspaceFolder}",
+                "command": ".vscode/helpers/list_processes.py",
+                "fieldSeparator": "|",
+                "description": "Select the process to attach to"
+            }
+        },
+        {
+            // uses augustocdias.tasks-shell-input
+            "id": "processid",
+            "type": "command",
+            "command": "shellCommand.execute",
+            "args": {
+                "cwd": "${workspaceFolder}",
+                "command": ".vscode/helpers/get_processid.py '${input:programName}'",
+                "fieldSeparator": "|",
+                "description": "Select the process to attach to",
+                "useSingleResult": true
+            }
+        },
+        {
+            // core file debugging requires libc
+            "id": "dbgSymbols_core",
+            "type": "pickString",
+            "description": "list of symbols to load (press Enter to load all)",
+            "options": [
+                "*"
+            ],
+            "default": "*"
+        },
+        {
+            // for breakpoints it requires to load fewer signals
+            "id": "dbgSymbols_attach",
+            "type": "pickString",
+            "description": "list of symbols to load (press Enter to load all)",
+            "options": [
+                "*"
+            ],
+            "default": "*"
+        },
+        {
+            // uses augustocdias.tasks-shell-input
+            "id": "coreFileName",
+            "type": "command",
+            "command": "shellCommand.execute",
+            "args": {
+                "cwd": "${workspaceFolder}",
+                "command": ".vscode/helpers/list_coredumps.py",
+                "fieldSeparator": "|",
+                "description": "Select the corefile"
+            }
+        },
+        {
+            // uses augustocdias.tasks-shell-input
+            "id": "coreFileExecutable",
+            "type": "command",
+            "command": "shellCommand.execute",
+            "args": {
+                "cwd": "${workspaceFolder}",
+                "command": ".vscode/helpers/get_executable.py ${input:coreFileName}",
+                "fieldSeparator": "|",
+                "description": "Select the executable",
+                "useSingleResult": true
+            }
+        },
+        {
+            // uses augustocdias.tasks-shell-input
+            "id": "releaseCoreFileName",
+            "type": "command",
+            "command": "shellCommand.execute",
+            "args": {
+                "cwd": "${workspaceFolder}/misc/dbgsym-core-dump",
+                "command": "${workspaceFolder}/.vscode/helpers/list_coredumps.py",
+                "fieldSeparator": "|",
+                "description": "Select the release core dump"
+            }
+        },
+        {
+            // uses augustocdias.tasks-shell-input
+            "id": "releaseCoreFileExecutable",
+            "type": "command",
+            "command": "shellCommand.execute",
+            "args": {
+                "cwd": "${workspaceFolder}/misc/dbgsym-core-dump",
+                "command": "${workspaceFolder}/.vscode/helpers/get_release_executable.py '${input:releaseCoreFileName}'",
+                "fieldSeparator": "|",
+                "description": "Select the executable",
+                "useSingleResult": true
+            }
+        },
+        {
+            // uses augustocdias.tasks-shell-input
+            "id": "releaseCoreFileSymbols",
+            "type": "command",
+            "command": "shellCommand.execute",
+            "args": {
+                "cwd": "${workspaceFolder}/misc/dbgsym-core-dump",
+                "command": "${workspaceFolder}/.vscode/helpers/get_release_executable.py '${input:releaseCoreFileName}' symbols",
+                "fieldSeparator": "|",
+                "description": "Select the symbols folder",
+                "useSingleResult": true
+            }
+        }
+    ],
+    "configurations": [
+        {
+            "name": "Attach to Process",
+            "type": "lldb",
+            "request": "attach",
+            "pid": "${input:processid}",
+            "sourceMap": {
+                "../../": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "Load Core dump",
+            "type": "lldb",
+            "request": "attach",
+            "stopOnEntry": true,
+            "processCreateCommands": [],
+            "targetCreateCommands": [
+                "target create -c ${input:coreFileName} ${input:coreFileExecutable}"
+            ],
+            "sourceMap": {
+                "../../": "${workspaceFolder}"
+            }
+        },
+        {
+            "name": "Debug quickjs gmrt (lldb)",
+            "type": "lldb",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/test/gmrt",
+            "args": [
+                "GMRT-Simple.js"
+            ],
+            "cwd": "${workspaceFolder}",
+            "sourceMap": {
+                ".": "${workspaceFolder}"
+            }
+        }
+    ]
+}

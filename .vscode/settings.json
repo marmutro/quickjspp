@@ -1,0 +1,33 @@
+{
+    "testMate.cpp.test.executables": "${workspaceFolder}/tests/*",
+    "testMate.cpp.debug.configTemplate": {
+        "type": "cppvsdbg",
+        "linux": {
+            "type": "lldb",
+            "request": "launch",
+            "sourceMap": {
+                "../../": "${workspaceFolder}"
+            }
+        },
+        "program": "${exec}",
+        "args": "${argsArray}",
+        "cwd": "${cwd}",
+        "env": "${envObj}",
+        "environment": "${envObjArray}",
+        "sourceFileMap": "${sourceFileMapObj}",
+        "testMate.cpp.debug.setEnv": {
+            "GTEST_CATCH_EXCEPTIONS": "0"
+        }
+    },
+    "clang-format.style": "file",
+    "clang-format.executable": "/usr/bin/clang-format-16",
+    "C_Cpp.formatting": "disabled",
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "testMate.cpp.discovery.loadOnStartup": true,
+    "[cpp]": {
+      "editor.defaultFormatter": "xaver.clang-format"
+    },
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+}

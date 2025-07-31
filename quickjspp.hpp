@@ -96,7 +96,7 @@ struct js_traits<JSValue>
  * Intentionally doesn't define traits for uint64_t since it can be typedefed to JSValue. (@see JS_NAN_BOXING)
  */
 template <typename Int>
-struct js_traits<Int, std::enable_if_t<std::is_integral_v<Int> && sizeof(Int) <= sizeof(int64_t) && !std::is_same_v<Int, uint64_t>>>
+struct js_traits<Int, std::enable_if_t<std::is_integral_v<Int> && sizeof(Int) <= sizeof(int64_t)>>
 {
     /// @throws exception
     static Int unwrap(JSContext * ctx, JSValueConst v)
@@ -1032,7 +1032,7 @@ struct js_traits<T *, std::enable_if_t<std::is_class_v<T>>>
 template <typename E>
 struct js_traits<E, std::enable_if_t<std::is_enum_v<E>>> {
     using T = std::underlying_type_t<E>;
-    static E unwrap(JSContext* ctx, JSValue v) noexcept {
+    static E unwrap(JSContext* ctx, JSValueConst v) noexcept {
         return static_cast<E>(js_traits<T>::unwrap(ctx, v));
     }
 
@@ -1254,7 +1254,7 @@ struct get_set<M>
 
 } // namespace detail
 
-/** JSValue with RAAI semantics.
+/** JSValue with RAII semantics.
  * A wrapper over (JSValue v, JSContext * ctx).
  * Calls JS_FreeValue(ctx, v) on destruction. Can be copied and moved.
  * A JSValue can be released by either JSValue x = std::move(value); or JSValue x = value.release(), then the Value becomes invalid and FreeValue won't be called
@@ -1428,7 +1428,7 @@ public:
     }
 
     std::string
-    toJSON(const Value& replacer = JS_UNDEFINED, const Value& space = JS_UNDEFINED)
+    toJSON(const Value& replacer = JS_UNDEFINED, const Value& space = JS_UNDEFINED) const
     {
         assert(ctx);
         assert(!replacer.ctx || ctx == replacer.ctx);

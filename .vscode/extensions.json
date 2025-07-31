@@ -1,0 +1,25 @@
+{
+    "recommendations": [
+        "llvm-vs-code-extensions.vscode-clangd",
+        "vadimcn.vscode-lldb",
+        "ms-vscode.cpptools",
+        "ms-vscode.cmake-tools",
+        "twxs.cmake",
+        "jeff-hykin.better-cpp-syntax",
+        "ms-vscode-remote.remote-ssh",
+        "ms-python.python",
+        "ms-python.autopep8",
+        "xaver.clang-format",
+        "redhat.vscode-xml",
+        "augustocdias.tasks-shell-input",
+        "matepek.vscode-catch2-test-adapter",
+        "esbenp.prettier-vscode",
+        "streetsidesoftware.code-spell-checker",
+        "streetsidesoftware.code-spell-checker-german",
+        "amiralizadeh9480.cpp-helper",
+        "SonarSource.sonarlint-vscode"
+    ],
+    "unwantedRecommendations": [
+        "ms-python.isort"
+    ]
+}
